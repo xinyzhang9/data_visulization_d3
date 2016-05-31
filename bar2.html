@@ -3,7 +3,7 @@
 <style>
 
 .chart rect {
-  fill: steelblue;
+  fill: green;
 }
 
 .chart text {
@@ -26,7 +26,8 @@ var x = d3.scale.linear()
 var chart = d3.select(".chart")
     .attr("width", width);
 
-d3.tsv("data.tsv", type, function(error, data) {
+//save data file in localhost
+d3.tsv("http://localhost:8888/d3_data/data1.tsv", type, function(error, data) {
   x.domain([0, d3.max(data, function(d) { return d.value; })]);
 
   chart.attr("height", barHeight * data.length);
