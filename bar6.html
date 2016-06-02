@@ -6,6 +6,9 @@
       <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 		<style type="text/css">
 			/* No style rules here yet */	
+			svg text{
+				pointer-events : none;
+			}
 
 		</style>
 	</head>
@@ -57,25 +60,25 @@
 			   .attr("height", function(d) {
 			   		return yScale(d);
 			   })
-			   .attr("fill",function(d){return "rgb("+(d * 4)+",100,0)";});
+			   .attr("fill",function(d){return "rgb("+(d * 5)+",100,0)";});
 
-			svg.selectAll("text")
-				.data(dataset)
-				.enter()
-				.append("text")
-				.text(function(d){
-					return d;
-				})
-				.attr("text-anchor", "middle")
-			   	.attr("x", function(d, i) {
-			   		return xScale(i) + xScale.rangeBand() / 2;
-			   	})
-			   	.attr("y", function(d) {
-			   		return h - yScale(d) + 14;
-			   	})
-			   	.attr("font-family", "sans-serif")
-			   	.attr("font-size", "11px")
-			   	.attr("fill", "white");
+			// svg.selectAll("text")
+			// 	.data(dataset)
+			// 	.enter()
+			// 	.append("text")
+			// 	.text(function(d){
+			// 		return d;
+			// 	})
+			// 	.attr("text-anchor", "middle")
+			//    	.attr("x", function(d, i) {
+			//    		return xScale(i) + xScale.rangeBand() / 2;
+			//    	})
+			//    	.attr("y", function(d) {
+			//    		return h - yScale(d) + 14;
+			//    	})
+			//    	.attr("font-family", "sans-serif")
+			//    	.attr("font-size", "11px")
+			//    	.attr("fill", "white");
 
 			d3.select("p").on("click",function(){
 				//New values for dataset
@@ -103,40 +106,86 @@
 				        return yScale(d);
 				   })
 				   .attr("fill", function(d) {   // <-- Down here!
-				        return "rgb("+(d * 4)+",100,0)";
+				        return "rgb("+(d * 5)+",100,0)";
 				   });
 
-				svg.selectAll("text")
-				   .data(dataset)
-				   .transition()
-				   .delay(function(d, i) {
-					    return i / dataset.length * 1000;
-					})
-				   .duration(500)
-				   .ease("linear")
-				   .text(function(d) {
-				        return d;
-				   })
-				   .attr("x", function(d, i) {
-				        return xScale(i) + xScale.rangeBand() / 2;
-				   })
-				   .attr("y", function(d) {
-				        return h - yScale(d) + 14;
-				   });
+				// svg.selectAll("text")
+				//    .data(dataset)
+				//    .transition()
+				//    .delay(function(d, i) {
+				// 	    return i / dataset.length * 1000;
+				// 	})
+				//    .duration(500)
+				//    .ease("linear")
+				//    .text(function(d) {
+				//         return d;
+				//    })
+				//    .attr("x", function(d, i) {
+				//         return xScale(i) + xScale.rangeBand() / 2;
+				//    })
+				//    .attr("y", function(d) {
+				//         return h - yScale(d) + 14;
+				//    });
 
 			})
 
 		
 		svg.selectAll("rect").on("mouseover",function(d){
+			var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
+			var yPosition = parseFloat(d3.select(this).attr("y")) + 14;
+
+			svg.append("text")
+			  .attr("id", "tooltip")
+			  .attr("x", xPosition)
+			  .attr("y", yPosition)
+			  .attr("text-anchor", "middle")
+			  .attr("font-family", "sans-serif")
+			  .attr("font-size", "11px")
+			  .attr("font-weight", "bold")
+			  .attr("fill", "white")
+			  .text(d);
+
 			d3.select(this)
 				.attr("fill","red");
 		})
 		svg.selectAll("rect").on("mouseout", function(d) {
+			d3.select("#tooltip").remove();
 		    d3.select(this)
 		      .transition()
 		      .duration(250)
-		      .attr("fill",function(d){return "rgb("+(d * 4)+",100,0)";});
+		      .attr("fill",function(d){return "rgb("+(d * 5)+",100,0)";});
 		});
+
+		svg.selectAll("rect").on("click",function(){
+			sortBars();
+
+		})
+
+		var sortOrder = false;
+
+		var sortBars = function() {
+			sortOrder = !sortOrder;
+
+        svg.selectAll("rect")
+           .sort(function(a, b) {
+           		if(sortOrder)
+                 	return d3.ascending(a, b);
+             	else
+             		return d3.descending(a,b);
+           })
+           .transition()
+           .delay(function(d, i) {
+			    	return i * 25;
+			})
+           .duration(250)
+           .attr("x", function(d, i) {
+                 return xScale(i);
+           });
+
+
+
+
+};
 			
 		</script>
 	</body>
