@@ -22,13 +22,13 @@
 
     <script type="text/javascript">
 
-//Read the data from the mis element 
+//Read the data from external json file from server
   $.getJSON("http://localhost:8888/d3_data/graphdata.json",function(data){
     graph = data;
 
         //Constants for the SVG
-  var width = 500,
-      height = 500;
+  var width = 1200,
+      height = 800;
 
   //Set up the colour scale
   var color = d3.scale.category20();
